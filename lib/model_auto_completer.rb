@@ -8,7 +8,7 @@ module ModelAutoCompleter #:nodoc:
     def auto_complete_belongs_to_for(object, association, method, options={}) #:nodoc:
       define_method("auto_complete_belongs_to_for_#{object}_#{association}_#{method}") do
         find_options = { 
-          :conditions => ["LOWER(#{method}) LIKE ?", '%' + params[association][method].chars.downcase + '%'], 
+          :conditions => ["LOWER(#{method}) LIKE ?", '%' + params[association][method].mb_chars.downcase + '%'], 
           :order => "#{method} ASC",
           :limit => 10
         }.merge!(options)
