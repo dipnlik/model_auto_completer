@@ -145,6 +145,11 @@ module ModelAutoCompleterHelper
   #   free edition is allowed, and if the text field contains free text the
   #   hidden field will contain the empty string. Defauts to +false+.
   #
+  # * <tt>:id_prefix</tt>: A string that's used to generate the text field and its
+  #   associated hidden field. Can be customized in order to have known ids for
+  #   both fields. Bad synergy with <tt>:append_random_suffix</tt>.
+  #   Defaults to <tt>model_auto_completer</tt>.
+  #
   # * <tt>:append_random_suffix</tt>: If +true+ the HTML id of the generated
   #   fields gets a random suffix to avoid collisions in case you put
   #   the widget more than once in the same page. Defaults to +true+.
@@ -174,6 +179,7 @@ module ModelAutoCompleterHelper
   def model_auto_completer(tf_name, tf_value, hf_name, hf_value, options={}, tag_options={}, completion_options={})
     options = {
       :regexp_for_id        => '(\d+)$',
+      :id_prefix            => 'model_auto_completer',
       :append_random_suffix => true,
       :allow_free_text      => false,
       :submit_on_return     => false,
@@ -199,8 +205,8 @@ module ModelAutoCompleterHelper
 private
 
   def determine_field_ids(options)
-    hf_id = 'model_auto_completer_hf'
-    tf_id = 'model_auto_completer_tf'
+    hf_id = "#{options[:id_prefix]}_hf"
+    tf_id = "#{options[:id_prefix]}_tf"
     if options[:append_random_suffix]
       rand_id = Digest::SHA1.hexdigest(Time.now.to_s.split(//).sort_by {rand}.join)
       hf_id << "_#{rand_id}"
