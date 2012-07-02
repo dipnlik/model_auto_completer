@@ -106,7 +106,8 @@ module ModelAutoCompleterHelper
   #
   # Generated INPUT elements have a random suffix in their <tt>id</tt>s so that
   # you can include this widget more than once in the same page with negligible
-  # risk of collision. You can turn this off via <tt>:append_random_suffix</tt>.
+  # risk of collision. You can provide this suffix or turn this behavior off via
+  # <tt>:append_suffix</tt>.
   #
   # The widget expects a regular unordered list of completions as you send
   # for the standard Rails autocompleter, except list items are required to
@@ -147,13 +148,14 @@ module ModelAutoCompleterHelper
   #
   # * <tt>:id_prefix</tt>: A string that's used to generate the text field and its
   #   associated hidden field. Can be customized in order to have known ids for
-  #   both fields. Bad synergy with <tt>:append_random_suffix</tt>.
-  #   Defaults to <tt>model_auto_completer</tt>.
+  #   both fields. Defaults to <tt>model_auto_completer</tt>.
   #
-  # * <tt>:append_random_suffix</tt>: If +true+ the HTML id of the generated
+  # * <tt>:append_suffix</tt>: If +:random+ the HTML id of the generated
   #   fields gets a random suffix to avoid collisions in case you put
-  #   the widget more than once in the same page. Defaults to +true+.
-  #   (Since 1.5.)
+  #   the widget more than once in the same page. If a string is provided,
+  #   then it's used as the suffix instead. Defaults to +:random+. (Since 1.5.)
+  #
+  # * <tt>:append_random_suffix</tt>: Deprecated. Use +:append_suffix+ instead.
   #
   # * <tt>:submit_on_return</tt>: Some browsers submit the form if you select
   #   and item from the completion list with the keyboard. If this flag is off
@@ -180,7 +182,7 @@ module ModelAutoCompleterHelper
     options = {
       :regexp_for_id        => '(\d+)$',
       :id_prefix            => 'model_auto_completer',
-      :append_random_suffix => true,
+      :append_suffix        => :random,
       :allow_free_text      => false,
       :submit_on_return     => false,
       :controller           => controller.controller_name,
@@ -207,10 +209,13 @@ private
   def determine_field_ids(options)
     hf_id = "#{options[:id_prefix]}_hf"
     tf_id = "#{options[:id_prefix]}_tf"
-    if options[:append_random_suffix]
+    if options[:append_suffix] == :random
       rand_id = Digest::SHA1.hexdigest(Time.now.to_s.split(//).sort_by {rand}.join)
       hf_id << "_#{rand_id}"
       tf_id << "_#{rand_id}"
+    elsif options[:append_suffix]
+      hf_id << "_#{options[:append_suffix]}"
+      tf_id << "_#{options[:append_suffix]}"
     end
     return hf_id, tf_id
   end

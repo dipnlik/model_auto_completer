@@ -10,6 +10,9 @@ text field, and the widget manages a hidden field that stores the ID of the sele
 This fork adds the <tt>:id_prefix</tt> option to have known IDs for both the text field and the
 hidden field (so they can be used via javascript or have an associated label).
 
+It also *replaces* <tt>:append_random_suffix</tt> with an improved <tt>:append_suffix</tt> option,
+that not only allows for random suffixes but also for non-random suffixes.
+
 == Usage
 
 This plugin offers three helpers and a class method for controllers. See the
